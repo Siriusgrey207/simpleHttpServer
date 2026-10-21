@@ -58,8 +58,14 @@ public class HttpParser {
                     if (!methodParsed || !requestTargetParsed) {
                         throw new HttpParsingException(HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
                     }
-                    return;
 
+                    try {
+                        request.setOriginalHttpVersion(processingDataBuffer.toString());
+                    } catch (BadHttpVersionException e) {
+                        throw new HttpParsingException(HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
+                    }
+
+                    return;
                     // After a CR char we always expect the next char to be an LF. Otherwise the request line has not
                     // been formatted correctly and we throw an error.
                 } else {
